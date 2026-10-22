@@ -24,8 +24,8 @@ class NewsCard extends StatelessWidget {
             child: news.imageUrl == null
                 ? Center(
                   child: Container(
-                                height: 100,
-                                width: 100,
+                                height: 200,
+                                width: double.infinity,
                                 color: Colors.grey.shade300,
                                 child: const Icon(Icons.image_not_supported_rounded),
                               ),
@@ -34,11 +34,11 @@ class NewsCard extends StatelessWidget {
                   child: Image.network(
                                 news.imageUrl!,
                                 height: 200,
-                                width: 200,
+                                width: double.infinity,
                                 fit: BoxFit.cover,
                                 errorBuilder: (_, __, ___) => Container(
                   height: 100,
-                  width: 100,
+                  width: double.infinity,
                   color: Colors.grey.shade300,
                   child: const Icon(Icons.broken_image),
                                 ),

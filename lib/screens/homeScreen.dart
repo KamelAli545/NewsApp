@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:newsapp/NewsCard.dart';
 import 'package:newsapp/cubit/news_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:newsapp/widgets/categoryRow.dart';
+import 'package:newsapp/widgets/drawer.dart';
+import 'package:newsapp/widgets/newsTab.dart';
 
 
 class HomesScreen extends StatefulWidget {
@@ -15,6 +18,8 @@ class HomesScreen extends StatefulWidget {
 class _HomesScreenState extends State<HomesScreen> {
   final searchController = TextEditingController();
   String searchQuery = '';
+  int _selectedTab=0;
+
 
   @override
   void dispose() {
@@ -22,14 +27,23 @@ class _HomesScreenState extends State<HomesScreen> {
     super.dispose();
   }
 
+  void _selectTab(int index) {
+    searchController.clear();
+    setState(() {
+      _selectedTab = index;
+      searchQuery = '';
+    });
+    context.read<NewsCubit>().loadCategory(newsTabs[index].category);  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: AppDrawer(),
       appBar: AppBar(
         title: Text("Newsify",
           style: TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.bold
+              fontWeight: FontWeight.bold,
+            color: Colors.blue
           ),),
         actions: [
           IconButton(onPressed: () {}
@@ -56,28 +70,11 @@ class _HomesScreenState extends State<HomesScreen> {
               ),
             ),
           ),
-
-          SizedBox(
-            height: 50,
-            width: double.infinity,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text("Trending News",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),),
-                Spacer(),
-                Text("View All",
-                  style: TextStyle(
-                    color: Colors.green,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),),
-              ],
-            ),
+          CategoryRow(
+            selected: _selectedTab,
+            onTap: _selectTab,
           ),
+            SizedBox(height: 10,),
           Expanded(child:
           BlocBuilder<NewsCubit, NewsState>(
             builder: (context, state) {

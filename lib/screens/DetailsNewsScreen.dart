@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:newsapp/cubit/savedServices.dart';
 import 'package:newsapp/model/News.dart';
 
 class DetailsNewsScreen extends StatelessWidget {
@@ -8,12 +9,29 @@ class DetailsNewsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final service = SavedService();
     final date = (news.pubDate ?? '').split(' ').first;
 
     return Scaffold(
-      appBar: AppBar(title:
+      appBar: AppBar(
+          title:
       Text(
-          news.sourceName ?? 'News')
+          news.sourceName ?? 'News'),
+        actions: [
+          StreamBuilder<bool>(
+            stream: service.watchIsSaved(news.articleId ?? ''),
+            builder: (context, snap) {
+              final isSelected = snap.data ?? false;
+              return IconButton(
+                onPressed: () => service.toggle(news),
+                icon: Icon(
+                  isSelected ? Icons.favorite_rounded : Icons.favorite_outline,
+                  color: isSelected ? Colors.blue : Colors.black,
+                ),
+              );
+            },
+          ),        ],
+
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -32,7 +50,7 @@ class DetailsNewsScreen extends StatelessWidget {
                   : Image.network(
                 news.imageUrl!,
                 height: 220,
-                width: 220,
+                width: double.infinity,
                 fit: BoxFit.cover,
                 errorBuilder: (_, __, ___) => Container(
                   height: 220,
